@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 
-@Configuration
+@Configuration(enforceUniqueMethods = false)
 @PropertySource("classpath:figure.properties")
 public class MyConfig {
 
@@ -39,13 +39,14 @@ public class MyConfig {
 
     @Bean()
     @Scope("prototype")
-    public Coords coords1(@Value("#{T(java.lang.Math).random()*30}") int x,
+    public Coords coords(@Value("#{T(java.lang.Math).random()*30}") int x,
                           @Value("#{T(java.lang.Math).random()*30}") int y) {
         return new Coords(x, y);
     }
 
 
     @Bean
+    @Scope("prototype")
     public Point pointBean() {
         Point p = new Point(coords());
         p.setColor(color);
@@ -57,7 +58,7 @@ public class MyConfig {
     @Bean("defaultCircle")
     @Scope("prototype")
     public Circle circleBean() {
-        Circle c = new Circle(coords1(
+        Circle c = new Circle(coords(
                 env.getProperty("circle.x", Integer.class, 2),
                 env.getProperty("circle.y", Integer.class, 2)),
                 env.getProperty("circle.radius", Integer.class, 23));
