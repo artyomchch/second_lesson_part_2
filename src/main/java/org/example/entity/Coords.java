@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class Coords {
 
     private int x;
@@ -16,7 +18,7 @@ public class Coords {
     public int getX() {
         return x;
     }
-
+    @Value("#{T(java.lang.Math).random()*50}")
     public void setX(int x) {
         this.x = x;
     }
@@ -25,6 +27,7 @@ public class Coords {
         return y;
     }
 
+    @Value("#{T(java.lang.Math).random()*50}")
     public void setY(int y) {
         this.y = y;
     }

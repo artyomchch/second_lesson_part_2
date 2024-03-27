@@ -3,7 +3,6 @@ package org.example;
 import org.example.entity.Circle;
 import org.example.entity.Coords;
 import org.example.entity.Point;
-import org.example.entity.Shape;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -40,10 +39,10 @@ public class MyConfig {
 
     @Bean()
     @Scope("prototype")
-    public Coords coords1(@Value("#{default.x}") int x, @Value("#{default.y}") int y) {
+    public Coords coords1(@Value("#{T(java.lang.Math).random()*30}") int x,
+                          @Value("#{T(java.lang.Math).random()*30}") int y) {
         return new Coords(x, y);
     }
-
 
 
     @Bean
@@ -59,17 +58,17 @@ public class MyConfig {
     @Scope("prototype")
     public Circle circleBean() {
         Circle c = new Circle(coords1(
-                env.getProperty("circle.x", Integer.class),
-                env.getProperty("circle.y", Integer.class)),
-                env.getProperty("circle.radius", Integer.class));
-        c.setColor(env.getProperty("circle.radius", String.class));
+                env.getProperty("circle.x", Integer.class, 2),
+                env.getProperty("circle.y", Integer.class, 2)),
+                env.getProperty("circle.radius", Integer.class, 23));
+        c.setColor(env.getProperty("circle.color", String.class));
 
         return c;
     }
 
     @Bean
     @Scope("prototype")
-    public Circle circle(@Value("#{default.x}") int r){
+    public Circle circle(@Value("#{default.x}") int r) {
         Circle c = new Circle();
         c.setRadius(r);
         return c;
@@ -77,10 +76,10 @@ public class MyConfig {
 
     @Bean
     @Lazy
-    public Scene scene(){
+    public Scene scene() {
         Scene s = new Scene();
-        s.objects = new ArrayList<Shape>();
-        for (int i =0; i< 2; i++){
+        s.objects = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
             s.objects.add(pointBean());
             s.objects.add(circleBean());
         }
